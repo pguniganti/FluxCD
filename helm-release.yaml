@@ -1,0 +1,30 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: kube-prometheus-stack
+  namespace: monitoring
+spec:
+  interval: 5m
+  timeout: 10m
+  chart:
+    spec:
+      chart: kube-prometheus-stack
+      sourceRef:
+        kind: HelmRepository
+        name: prometheus-community
+        namespace: flux-system
+  values:
+    prometheus:
+      server:
+        tls:
+          enabled: true
+          secretName: prometheus-tls # Ensure this matches your created secret
+    grafana:
+      ingress:
+        enabled: true
+        hosts:
+        - grafana.example.com
+        tls:
+        - secretName: grafana-tls
+          hosts:
+          - grafana.example.com
